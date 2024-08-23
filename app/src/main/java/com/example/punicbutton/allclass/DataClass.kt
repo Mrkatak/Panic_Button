@@ -37,7 +37,7 @@ class RegisterViewModel : ViewModel() {
 
     fun register(nomorRumah: String, sandi: String, context: Context, navController: NavController) {
         viewModelScope.launch {
-            val url = "http://172.16.100.107/button/registrasi.php"
+            val url = "http://172.16.100.130/button/registrasi.php"
             val requestBody = FormBody.Builder()
                 .add("nomor_rumah", nomorRumah)
                 .add("sandi", sandi)
