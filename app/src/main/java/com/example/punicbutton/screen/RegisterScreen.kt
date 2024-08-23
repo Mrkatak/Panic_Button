@@ -1,6 +1,7 @@
 package com.example.punicbutton.screen
 
 import android.annotation.SuppressLint
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,6 +40,7 @@ fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = 
     val (sandi, setSandi) = remember { mutableStateOf("") }
     val context = LocalContext.current
     val scaffoldState = rememberScaffoldState()
+
 
     Scaffold(scaffoldState = scaffoldState) {
         Column(

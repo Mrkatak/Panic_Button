@@ -36,6 +36,12 @@ class RegisterViewModel : ViewModel() {
     private val client = OkHttpClient()
 
     fun register(nomorRumah: String, sandi: String, context: Context, navController: NavController) {
+        if (nomorRumah.isBlank() || sandi.isBlank()){
+            Toast.makeText(context, "Pendaftaran gagal: Lengkapi data diatas", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         viewModelScope.launch {
             val url = "http://172.16.100.130/button/registrasi.php"
             val requestBody = FormBody.Builder()
@@ -51,6 +57,7 @@ class RegisterViewModel : ViewModel() {
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
                     e.printStackTrace()
+
                     viewModelScope.launch {
                         Toast.makeText(context, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_SHORT).show()
                     }
@@ -63,6 +70,7 @@ class RegisterViewModel : ViewModel() {
                             navController.navigate("login") {
                                 popUpTo("register") { inclusive = true }
                             }
+
                         }
                     } else {
                         viewModelScope.launch {
