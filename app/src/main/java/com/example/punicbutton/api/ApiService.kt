@@ -1,0 +1,33 @@
+package com.example.punicbutton.api
+
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+
+interface ApiService {
+
+    @FormUrlEncoded
+    @POST("login.php")
+    fun login(
+        @Field("nomor_rumah") nomorRumah: String,
+        @Field("sandi") sandi: String
+    ): Call<LoginResponse>
+
+    @FormUrlEncoded
+    @POST("registrasi.php")
+    fun register(
+        @Field("nomor_rumah") nomorRumah: String,
+        @Field("sandi") sandi: String
+    ): Call<RegisterResponse>
+
+    @GET("monitor.php")
+    fun getMonitorData(): Call<MonitorResponse>
+
+    @GET("rekap.php")
+    fun getRekapData(): Call<RekapResponse>
+
+    @GET("status.php")
+    fun getStatus(): Call<StatusResponse>
+}
