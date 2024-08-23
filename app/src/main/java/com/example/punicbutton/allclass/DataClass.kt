@@ -1,12 +1,12 @@
 package com.example.punicbutton.allclass
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.example.punicbutton.api.LoginResponse
-import com.example.punicbutton.api.RetrofitClient
 import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.Callback
@@ -19,17 +19,59 @@ import okio.IOException
 
 // class Login
 class LoginViewModel : ViewModel() {
-    fun login(nomorRumah: String, sandi: String, callback: (LoginResponse) -> Unit) {
+    private val client = OkHttpClient()
+
+    fun login(nomorRumah: String, sandi: String, context: Context, navController: NavController) {
+        if (nomorRumah.isBlank() || sandi.isBlank()){
+            Toast.makeText(context, "Pendaftaran gagal: Lengkapi data diatas", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+
         viewModelScope.launch {
-            val response = RetrofitClient.apiService.login(nomorRumah, sandi).execute()
-            if (response.isSuccessful) {
-                callback(response.body()!!)
-            } else {
-                callback(LoginResponse(false, "Login failed"))
-            }
+            val url = "http://172.16.100.130/button/login.php"
+            val requestBody = FormBody.Builder()
+                .add("nomor_rumah", nomorRumah)
+                .add("sandi", sandi)
+                .build()
+
+            val request = Request.Builder()
+                .url(url)
+                .post(requestBody)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    e.printStackTrace()
+
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(context, "Terjadi kesalahan: ${e.message}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    Handler(Looper.getMainLooper()).post {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body?.string()
+                            if (responseBody?.contains("success") == true) {
+                                Toast.makeText(context, "Login berhasil!", Toast.LENGTH_SHORT).show()
+                                navController.navigate("home/$nomorRumah") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            } else {
+                                Toast.makeText(context, "Login gagal: Nomor rumah atau sandi salah", Toast.LENGTH_SHORT).show()
+                            }
+                        } else {
+                            Toast.makeText(context, "Login gagal: ${response.message}", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                }
+            })
         }
     }
 }
+
 
 //class Register
 class RegisterViewModel : ViewModel() {
@@ -65,8 +107,9 @@ class RegisterViewModel : ViewModel() {
 
                 override fun onResponse(call: Call, response: Response) {
                     if (response.isSuccessful) {
-                        viewModelScope.launch {
-                            Toast.makeText(context, "Pendaftaran berhasil!", Toast.LENGTH_SHORT).show()
+                        val launch = viewModelScope.launch {
+                            Toast.makeText(context, "Pendaftaran berhasil!", Toast.LENGTH_SHORT)
+                                .show()
                             navController.navigate("login") {
                                 popUpTo("register") { inclusive = true }
                             }

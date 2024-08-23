@@ -2,9 +2,7 @@ package com.example.punicbutton.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -30,7 +28,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 
 @Composable
-fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = viewModel()
+) {
     val (nomorRumah, setNomorRumah) = remember { mutableStateOf("") }
     val (sandi, setSandi) = remember { mutableStateOf("") }
     val context = LocalContext.current
@@ -75,11 +76,7 @@ fun LoginScreen(navController: NavController, viewModel: LoginViewModel = viewMo
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(onClick = {
-                viewModel.login(nomorRumah, sandi) {
-                    if (it.success) {
-                    } else {
-                    }
-                }
+                viewModel.login(nomorRumah, sandi, context, navController)
             },
                 shape = RoundedCornerShape(16.dp)
             ) {
