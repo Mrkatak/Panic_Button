@@ -4,11 +4,13 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.punicbutton.screen.HomeScreen
+import com.example.punicbutton.screen.HomeScreenContent
 import com.example.punicbutton.screen.LoginScreen
 import com.example.punicbutton.screen.RegisterScreen
 import com.example.punicbutton.ui.theme.PunicButtonTheme
@@ -33,8 +35,10 @@ fun MyApp() {
         composable("login") { LoginScreen(navController = navController,) }
         composable("register") { RegisterScreen(navController = navController) }
         composable("home/{nomorRumah}") { backStackEntry ->
-            val nomorRumah = backStackEntry.arguments?.getString("nomorRumah") ?: ""
-            HomeScreen(navController, nomorRumah)
+            val nomorRumah = backStackEntry.arguments?.getString("nomorRumah")?.toIntOrNull() ?: 0
+            HomeScreenContent(
+                board = nomorRumah,
+                snackbarHostState = remember { SnackbarHostState() })
         }
     }
 }
