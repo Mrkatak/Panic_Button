@@ -1,10 +1,12 @@
 package com.example.punicbutton.api
 
+import com.example.punicbutton.allclass.DeviceState
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Query
 
 interface ApiService {
 
@@ -30,4 +32,10 @@ interface ApiService {
 
     @GET("status.php")
     fun getStatus(): Call<StatusResponse>
+
+    @GET("proses.php")
+    fun toggleDevice(
+        @Query("board") board: Int,
+        @Query("state") state: Int): Call<DeviceState>
+
 }
