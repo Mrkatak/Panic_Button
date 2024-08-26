@@ -35,3 +35,8 @@ data class StatusLog(
     val nomorRumah: String,
     val status: String
 )
+
+data class DeviceState(
+    val state: String
+)
+

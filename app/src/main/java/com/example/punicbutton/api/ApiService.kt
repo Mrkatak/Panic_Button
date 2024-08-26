@@ -1,6 +1,6 @@
 package com.example.punicbutton.api
 
-import com.example.punicbutton.allclass.DeviceState
+
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST

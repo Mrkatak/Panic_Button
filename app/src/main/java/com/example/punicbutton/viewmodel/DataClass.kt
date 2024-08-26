@@ -5,13 +5,13 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.material3.SnackbarHostState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
-import com.google.gson.annotations.SerializedName
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody
@@ -31,7 +31,7 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-        val url = "http://172.16.100.135/button/login.php"
+        val url = "http://172.16.100.162/button/login.php"
         val requestBody = FormBody.Builder()
             .add("nomor_rumah", nomorRumah)
             .add("sandi", sandi)
@@ -85,7 +85,7 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val url = "http://172.16.100.135/button/registrasi.php"
+            val url = "http://172.16.100.162/button/registrasi.php"
             val requestBody = FormBody.Builder()
                 .add("nomor_rumah", nomorRumah)
                 .add("sandi", sandi)
@@ -126,9 +126,53 @@ class RegisterViewModel : ViewModel() {
     }
 }
 
-data class DeviceState(
-    val state: String
-)
-data class DeviceStateArray(
-    val state: String
-)
+class PanicButton : ViewModel() {
+    private val client = OkHttpClient()
+
+    fun toggleDevice(
+        on: Boolean,
+        board: Int,
+        snackbarHostState: SnackbarHostState,
+        onLoadingChange: (Boolean) -> Unit
+    ) {
+        val client = OkHttpClient()
+        val state = if (on) 1 else 0
+        val url = "http://172.16.100.162/button/esp_iot/proses.php?id=2&state=$state"
+
+        val request = Request.Builder()
+            .url(url)
+            .build()
+
+        onLoadingChange(true)
+
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                e.printStackTrace()
+                Log.e("ToggleDevice", "Request Failed: ${e.message}")
+                CoroutineScope(Dispatchers.Main).launch {
+                    snackbarHostState.showSnackbar("Error: ${e.message}")
+                    onLoadingChange(false)  // Set loading to false
+
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                CoroutineScope(Dispatchers.Main).launch {
+                    if (response.isSuccessful) {
+                        val responseData = response.body?.string()
+                        Log.d("ToggleDevice", "Response: $responseData")
+                        snackbarHostState.showSnackbar("Device toggled successfully")
+                    } else {
+                        Log.e("ToggleDevice", "Request Failed: ${response.message}")
+                        snackbarHostState.showSnackbar("Failed to toggle device: ${response.message}")
+                    }
+                    onLoadingChange(false)
+
+                }
+            }
+        })
+    }
+}
+
+
+
