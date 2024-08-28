@@ -50,6 +50,7 @@ fun MyApp() {
         composable("login") { LoginScreen(navController = navController,) }
         composable("register") { RegisterScreen(navController = navController) }
         composable("admin"){ Dashboard(navController)}
+        composable("data_rekap") { DataRekap()}
         composable("home/{nomorRumah}") { backStackEntry ->
             val nomorRumah = backStackEntry.arguments?.getString("nomorRumah")?.toIntOrNull() ?: 0
             HomeScreen(
@@ -58,6 +59,6 @@ fun MyApp() {
                 navController =navController
             )
         }
-        composable("data_rekap") { DataRekap()}
+
     }
 }

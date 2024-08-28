@@ -53,7 +53,7 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-        val url = "http://172.16.100.128/button/login.php"
+        val url = "http://192.168.1.6/button/login.php"
         val requestBody = FormBody.Builder()
             .add("nomor_rumah", nomorRumah)
             .add("sandi", sandi)
@@ -142,7 +142,7 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val url = "http://172.16.100.128/button/registrasi.php"
+            val url = "http://192.168.1.6/button/registrasi.php"
             val requestBody = FormBody.Builder()
                 .add("nomor_rumah", nomorRumah)
                 .add("sandi", sandi)
@@ -195,7 +195,7 @@ class PanicButton : ViewModel() {
     ) {
         val client = OkHttpClient()
         val state = if (on) 1 else 0
-        val url = "http://172.16.100.128/button/esp_iot/proses.php?id=2&state=$state"
+        val url = "http://192.168.1.6/button/esp_iot/proses.php?id=2&state=$state"
 
         val request = Request.Builder()
             .url(url)
@@ -238,7 +238,7 @@ suspend fun fetchMonitorData(): MonitorData? {
     return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("http://172.16.100.128/button/monitor.php")
+            .url("http://192.168.1.6/button/monitor.php")
             .build()
 
         client.newCall(request).execute().use { response ->

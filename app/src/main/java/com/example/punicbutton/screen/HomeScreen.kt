@@ -22,6 +22,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.punicbutton.R
 import com.example.punicbutton.viewmodel.LoginViewModel
 import com.example.punicbutton.viewmodel.PanicButton
+import kotlinx.coroutines.delay
+import java.io.BufferedReader
 
 @Composable
 fun HomeScreen(
@@ -33,15 +35,29 @@ fun HomeScreen(
     var isOn by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
+    var showKeluarDialog by remember { mutableStateOf(false) }
     val loginViewModel = LoginViewModel()
     val context = LocalContext.current
 
     Box(
         contentAlignment = Alignment.TopEnd
     ) {
-        Button(onClick = { loginViewModel.logout(context, navController)}
+        Button(
+            onClick = { showKeluarDialog = true },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = colorResource(id = R.color.biru),
+                contentColor = Color.White
+            )
         ) {
-            Text(text = "Log Out")
+            Icon(
+                modifier = Modifier
+                    .size(24.dp),
+                painter = painterResource(id = R.drawable.ic_logout),
+                contentDescription = "ic_logout",
+                tint = Color.Black)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text(text = "Keluar",
+                color = Color.Black)
         }
         Column(
             modifier = Modifier
@@ -58,12 +74,16 @@ fun HomeScreen(
                 )
             }
             Switch(
-                checked = isOn ,
+                checked = isOn,
                 onCheckedChange = { checked ->
-                    isOn = checked
-                    isLoading = true
-                    viewModel.toggleDevice(isOn, board, snackbarHostState) {
-                        isLoading = false
+                    if (checked) {
+                        showDialog = true
+                    } else {
+                        isOn = false
+                        isLoading = true
+                        viewModel.toggleDevice(isOn, board, snackbarHostState) {
+                            isLoading = false
+                        }
                     }
                 },
                 thumbContent = {
@@ -97,13 +117,77 @@ fun HomeScreen(
                 modifier = Modifier
                     .scale(1.8f)
                     .padding(20.dp),
-                enabled = !isLoading)
+                enabled = !isLoading
+            )
         }
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Konfirmasi") },
+            text = { Text("Apakah Anda yakin ingin mengaktifkan Panic Button?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        isOn = true
+                        isLoading = true
+                        showDialog = false
+                        viewModel.toggleDevice(isOn, board, snackbarHostState) {
+                            isLoading = false
+                        }
+                    }
+                ) {
+                    Text("Ya")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showDialog = false }) {
+                    Text("Tidak")
+                }
+            }
+        )
+    }
+    LaunchedEffect(key1 = isOn) {
+        if (isOn) {
+            delay(15000)
+            isOn = false
+            isLoading = true
+            viewModel.toggleDevice(isOn, board, snackbarHostState){
+                isLoading = false
+            }
+        }
+    }
+    if (showKeluarDialog) {
+        AlertDialog(
+            onDismissRequest = { showKeluarDialog},
+            title = { Text( "Konfirmasi")},
+            text = { Text("Apakah Anda yakin ingin keluar?")},
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showKeluarDialog = false
+                        loginViewModel.logout(context, navController)
+                    }
+                ) { Text("Ya")
+
+            }
+            },
+            dismissButton = {
+                Button(onClick = { showKeluarDialog = false }) {
+                    Text("Tidak")
+                }
+            }
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun liat() {
-    HomeScreen(board = 1, snackbarHostState = SnackbarHostState(), navController = rememberNavController())
+    HomeScreen(
+        board = 1,
+        snackbarHostState = SnackbarHostState(),
+        navController = rememberNavController()
+    )
 }

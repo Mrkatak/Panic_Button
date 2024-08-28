@@ -44,7 +44,7 @@ fun RekapScreen(navController: NavController) {
         while (true) {
             try {
                 withContext(Dispatchers.IO) {
-                    val url = URL("http://172.16.100.128/button/rekap.php")
+                    val url = URL("http://192.168.1.6/button/rekap.php")
                     val connection = url.openConnection() as HttpURLConnection
                     connection.connectTimeout = 5000
                     connection.readTimeout = 5000
