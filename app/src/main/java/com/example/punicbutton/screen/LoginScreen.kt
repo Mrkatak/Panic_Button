@@ -23,7 +23,7 @@ import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.punicbutton.R
-import com.example.punicbutton.allclass.LoginViewModel
+import com.example.punicbutton.viewmodel.LoginViewModel
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 

@@ -1,14 +1,25 @@
-package com.example.punicbutton.allclass
+package com.example.punicbutton.viewmodel
 
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.AccountBox
+import androidx.compose.material.icons.outlined.Build
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
+import com.example.punicbutton.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,7 +42,16 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-        val url = "http://172.16.100.162/button/login.php"
+        if (nomorRumah == "admin" && sandi == "admin") {
+            Toast.makeText(context, "Login sebagai admin berhasil!", Toast.LENGTH_SHORT).show()
+            navController.navigate("admin") {
+                popUpTo("login") { inclusive = true }
+            }
+            return
+        }
+
+
+        val url = "http://172.16.100.128/button/login.php"
         val requestBody = FormBody.Builder()
             .add("nomor_rumah", nomorRumah)
             .add("sandi", sandi)
@@ -85,7 +105,7 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val url = "http://172.16.100.162/button/registrasi.php"
+            val url = "http://172.16.100.128/button/registrasi.php"
             val requestBody = FormBody.Builder()
                 .add("nomor_rumah", nomorRumah)
                 .add("sandi", sandi)
@@ -126,6 +146,7 @@ class RegisterViewModel : ViewModel() {
     }
 }
 
+//class Panic Button
 class PanicButton : ViewModel() {
     private val client = OkHttpClient()
 
@@ -137,7 +158,7 @@ class PanicButton : ViewModel() {
     ) {
         val client = OkHttpClient()
         val state = if (on) 1 else 0
-        val url = "http://172.16.100.162/button/esp_iot/proses.php?id=2&state=$state"
+        val url = "http://172.16.100.128/button/esp_iot/proses.php?id=2&state=$state"
 
         val request = Request.Builder()
             .url(url)
@@ -151,7 +172,7 @@ class PanicButton : ViewModel() {
                 Log.e("ToggleDevice", "Request Failed: ${e.message}")
                 CoroutineScope(Dispatchers.Main).launch {
                     snackbarHostState.showSnackbar("Error: ${e.message}")
-                    onLoadingChange(false)  // Set loading to false
+                    onLoadingChange(false)
 
                 }
             }
@@ -173,6 +194,8 @@ class PanicButton : ViewModel() {
         })
     }
 }
+
+
 
 
 

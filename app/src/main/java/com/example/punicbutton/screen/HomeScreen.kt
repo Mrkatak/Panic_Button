@@ -12,7 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.punicbutton.allclass.PanicButton
+import com.example.punicbutton.viewmodel.PanicButton
 
 @Composable
 fun HomeScreenContent(board: Int, snackbarHostState: SnackbarHostState, viewModel: PanicButton = viewModel()) {

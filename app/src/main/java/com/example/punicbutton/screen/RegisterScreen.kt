@@ -1,7 +1,6 @@
 package com.example.punicbutton.screen
 
 import android.annotation.SuppressLint
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +30,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
-import com.example.punicbutton.allclass.RegisterViewModel
+import com.example.punicbutton.viewmodel.RegisterViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable

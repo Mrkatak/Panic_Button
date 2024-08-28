@@ -10,6 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.punicbutton.screen.Dashboard
 import com.example.punicbutton.screen.HomeScreenContent
 import com.example.punicbutton.screen.LoginScreen
 import com.example.punicbutton.screen.RegisterScreen
@@ -34,6 +35,7 @@ fun MyApp() {
     NavHost(navController, startDestination = "login") {
         composable("login") { LoginScreen(navController = navController,) }
         composable("register") { RegisterScreen(navController = navController) }
+        composable("admin"){ Dashboard(navController)}
         composable("home/{nomorRumah}") { backStackEntry ->
             val nomorRumah = backStackEntry.arguments?.getString("nomorRumah")?.toIntOrNull() ?: 0
             HomeScreenContent(
