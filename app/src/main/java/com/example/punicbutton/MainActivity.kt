@@ -17,6 +17,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.punicbutton.screen.Dashboard
+import com.example.punicbutton.screen.DataRekap
 import com.example.punicbutton.screen.HomeScreen
 import com.example.punicbutton.screen.LoginScreen
 import com.example.punicbutton.screen.RegisterScreen
@@ -53,7 +54,10 @@ fun MyApp() {
             val nomorRumah = backStackEntry.arguments?.getString("nomorRumah")?.toIntOrNull() ?: 0
             HomeScreen(
                 board = nomorRumah,
-                snackbarHostState = remember { SnackbarHostState() })
+                snackbarHostState = remember { SnackbarHostState() },
+                navController =navController
+            )
         }
+        composable("data_rekap") { DataRekap()}
     }
 }

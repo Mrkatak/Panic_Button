@@ -255,5 +255,30 @@ suspend fun fetchMonitorData(): MonitorData? {
 }
 
 
+data class RekapItem(val waktu: String, val nomorRumah: String, val status: String)
+fun extractRekapData(html: String): List<RekapItem> {
+    val rekapItems = mutableListOf<RekapItem>()
+    try {
+        val document = Jsoup.parse(html)
+        val rows = document.select("table tr")
+
+        for (i in 1 until rows.size) {
+            val cols = rows[i].select("td")
+            if (cols.size >= 3) {
+                val waktu = cols[0].text()
+                val nomorRumah = cols[1].text()
+                val status = cols[2].text()
+                rekapItems.add(RekapItem(waktu, nomorRumah, status))
+            }
+        }
+    } catch (e: Exception) {
+        Log.e("RekapScreen", "Error parsing HTML", e)
+    }
+    return rekapItems
+}
+
+
+
+
 
 

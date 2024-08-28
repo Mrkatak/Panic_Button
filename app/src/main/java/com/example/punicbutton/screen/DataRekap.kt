@@ -24,7 +24,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import com.example.punicbutton.viewmodel.RekapItem
 import com.example.punicbutton.viewmodel.extractRekapData
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +34,7 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 @Composable
-fun RekapScreen(navController: NavController) {
+fun DataRekap() {
     var rekapData by remember { mutableStateOf(listOf<RekapItem>()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -53,7 +52,7 @@ fun RekapScreen(navController: NavController) {
                     val inputStream = connection.inputStream
                     val data = inputStream.bufferedReader().use { it.readText() }
                     val extractedData = extractRekapData(data)
-                    rekapData = extractedData.take(5)
+                    rekapData = extractedData
                     errorMessage = null
                 }
             } catch (e: Exception) {
@@ -89,7 +88,7 @@ fun RekapScreen(navController: NavController) {
                 }
             }
         }
-        TextButton(onClick = { navController.navigate("data_rekap") }) {
+        TextButton(onClick = { /*TODO*/ }) {
             Text("Lihat Selengkapnya")
         }
     }

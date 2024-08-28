@@ -65,8 +65,3 @@ fun MonitorScreen() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun liat() {
-    MonitorScreen()
-}
