@@ -7,19 +7,33 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.punicbutton.R
+import com.example.punicbutton.viewmodel.LoginViewModel
 import com.example.punicbutton.viewmodel.PanicButton
 
 @Composable
-fun HomeScreenContent(board: Int, snackbarHostState: SnackbarHostState, viewModel: PanicButton = viewModel()) {
+fun HomeScreen(
+    board: Int,
+    snackbarHostState: SnackbarHostState,
+    viewModel: PanicButton = viewModel()
+) {
     var isOn by remember { mutableStateOf(false) }
     var isLoading by remember { mutableStateOf(false) }
-    val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
 
 
     Column(
@@ -36,83 +50,52 @@ fun HomeScreenContent(board: Int, snackbarHostState: SnackbarHostState, viewMode
                     .padding(bottom = 16.dp)
             )
         }
-
-        Text(
-            text = "Panic Button",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold
-        )
-
-        Spacer(modifier = Modifier.padding(vertical = 24.dp))
-
-        Button(
-            onClick = {
-                showDialog = true
-
-            },
-            shape = RoundedCornerShape(16.dp),
-            modifier = Modifier.size(100.dp, 80.dp),
-            enabled = !isLoading
-
-        ) {
-            Text(if (isOn) "Turn Off" else "Turn On")
-
-        }
-    }
-
-    // Confirmation dialog
-    if (showDialog) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = { Text(text = "Confirm Action") },
-            text = { Text(text = "Are you sure you want to ${if (isOn) "turn off" else "turn on"} the alarm?") },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        showDialog = false
-                        isOn = !isOn
-                        isLoading = true
-                        viewModel.toggleDevice(isOn, board, snackbarHostState) {
-                            isLoading = false
-                        }
-                        if (isOn) {
-                            Toast.makeText(context, "Alarm Berbunyi", Toast.LENGTH_SHORT).show()
-                        } else {
-                            Toast.makeText(context, "Alarm Berhenti", Toast.LENGTH_SHORT).show()
-                        }
-                    }
-                ) {
-                    Text("Yes")
+        Switch(
+            checked = isOn ,
+            onCheckedChange = { checked ->
+                isOn = checked
+                isLoading = true
+                viewModel.toggleDevice(isOn, board, snackbarHostState) {
+                    isLoading = false
                 }
             },
-            dismissButton = {
-                Button(
-                    onClick = { showDialog = false }
-                ) {
-                    Text("No")
+            thumbContent = {
+                if (isOn) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.onmode),
+                        contentDescription = "on mode",
+                        modifier = Modifier
+                            .padding(5.dp),
+                        tint = Color.Black
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.offmode),
+                        contentDescription = "off mode",
+                        modifier = Modifier
+                            .padding(5.dp)
+                            .size(24.dp),
+                        tint = Color.White
+                    )
                 }
-            }
-        )
+            },
+            colors = SwitchDefaults.colors(
+                checkedTrackColor = colorResource(id = R.color.pudar),
+                uncheckedTrackColor = colorResource(id = R.color.merah_pudar),
+                uncheckedBorderColor = colorResource(id = R.color.merah),
+                checkedThumbColor = colorResource(id = R.color.biru),
+                uncheckedThumbColor = colorResource(id = R.color.merah),
+                checkedBorderColor = colorResource(id = R.color.biru)
+            ),
+            modifier = Modifier
+                .scale(1.8f)
+                .padding(20.dp),
+            enabled = !isLoading)
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@Preview(showBackground = true)
+@Composable
+private fun liat() {
+    HomeScreen(board = 1, snackbarHostState = SnackbarHostState())
+}

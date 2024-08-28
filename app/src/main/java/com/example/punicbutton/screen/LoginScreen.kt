@@ -42,53 +42,59 @@ fun LoginScreen(
             .padding(start = 24.dp, end = 24.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(
+        Surface(
             modifier = Modifier
-                .background(color = colorResource(id = R.color.pudar), RoundedCornerShape(16.dp))
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+                .shadow(16.dp, RoundedCornerShape(16.dp))
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                text = "Masuk",
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-            OutlinedTextField(
-                value = nomorRumah,
-                onValueChange = { setNomorRumah(it) },
-                label = { Text("Nomor Rumah") },
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = sandi,
-                onValueChange = { setSandi(it) },
-                label = { Text("Sandi") },
-                visualTransformation = PasswordVisualTransformation(),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = {
-                viewModel.login(nomorRumah, sandi, context, navController)
-            },
-                shape = RoundedCornerShape(16.dp)
+            Column(
+                modifier = Modifier
+                    .background(color = colorResource(id = R.color.pudar), RoundedCornerShape(16.dp))
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
             ) {
-                Text("Masuk")
-            }
-            Spacer(modifier = Modifier.height(8.dp))
-            TextButton(onClick = {
-                navController.navigate("register")
-            }) {
-                Text("Daftar")
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Masuk",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                OutlinedTextField(
+                    value = nomorRumah,
+                    onValueChange = { setNomorRumah(it) },
+                    label = { Text("Nomor Rumah") },
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedTextField(
+                    value = sandi,
+                    onValueChange = { setSandi(it) },
+                    label = { Text("Sandi") },
+                    visualTransformation = PasswordVisualTransformation(),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = {
+                    viewModel.login(nomorRumah, sandi, context, navController)
+                },
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text("Masuk")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                TextButton(onClick = {
+                    navController.navigate("register")
+                }) {
+                    Text("Daftar")
+                }
             }
         }
+
     }
 }
 
@@ -98,36 +104,4 @@ private fun liat() {
     val navController = rememberNavController()
     LoginScreen(navController = navController)
 
-}
-
-
-
-@Composable
-fun ColumnWithShadow() {
-    // Surface is used to apply shadow and other styles
-    Surface(
-        modifier = Modifier
-            .padding(16.dp)
-            .shadow(8.dp, RoundedCornerShape(8.dp)), // shadow with rounded corners
-        shape = RoundedCornerShape(8.dp), // same rounded corner for content inside
-        color = MaterialTheme.colorScheme.background
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .background(Color.White)
-        ) {
-            // Add content to your column here
-            Text("Item 1")
-            Text("Item 2")
-            Text("Item 3")
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewColumnWithShadow() {
-    ColumnWithShadow()
 }

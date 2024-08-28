@@ -3,6 +3,7 @@ package com.example.punicbutton.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -15,6 +16,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.punicbutton.viewmodel.MonitorData
@@ -27,18 +29,17 @@ fun MonitorScreen() {
 
     LaunchedEffect(Unit) {
         while (true) {
-            monitorData = fetchMonitorData() // This will now be safe and won't block the main thread
-            delay(1000L) // Refresh every second
+            monitorData = fetchMonitorData()
+            delay(1000L)
         }
     }
 
     if (monitorData != null) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
                 text = "Nomor Rumah",
@@ -57,9 +58,15 @@ fun MonitorScreen() {
                 textAlign = TextAlign.Center,
                 modifier = Modifier.padding(top = 16.dp)
             )
-            RekapScreen()
+
         }
     } else {
         CircularProgressIndicator()
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun liat() {
+    MonitorScreen()
 }

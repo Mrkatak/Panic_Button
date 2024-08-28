@@ -80,5 +80,5 @@ dependencies {
     implementation ("androidx.navigation:navigation-compose:2.7.0")
     implementation ("org.json:json:20210307")
     implementation ("com.google.code.gson:gson:2.8.9")
-    implementation("org.jsoup:jsoup:1.13.1") // For HTML parsing
+    implementation("org.jsoup:jsoup:1.13.1")
 }

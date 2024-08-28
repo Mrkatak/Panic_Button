@@ -8,6 +8,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="pudar">#2556B0F8</color>
-    <color name="merah">#25F85656</color>
+    <color name="merah">#FF0000</color>
     <color name="biru">#8056B0F8</color>
+    <color name="merah_pudar">#FFA27F</color>
 </resources>

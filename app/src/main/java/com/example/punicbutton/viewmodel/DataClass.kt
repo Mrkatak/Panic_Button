@@ -53,8 +53,7 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-
-        val url = "http://172.16.100.175/button/login.php"
+        val url = "http://172.16.100.128/button/login.php"
         val requestBody = FormBody.Builder()
             .add("nomor_rumah", nomorRumah)
             .add("sandi", sandi)
@@ -80,6 +79,9 @@ class LoginViewModel : ViewModel() {
                     Handler(Looper.getMainLooper()).post {
                         if (responseBody.contains("success")) {
                             Toast.makeText(context, "Login berhasil!", Toast.LENGTH_SHORT).show()
+
+                            saveUserLogin(context, nomorRumah)
+
                             navController.navigate("home/$nomorRumah") {
                                 popUpTo("login") { inclusive = true }
                             }
@@ -95,6 +97,38 @@ class LoginViewModel : ViewModel() {
             }
         })
     }
+
+    private fun saveUserLogin(context: Context, nomorRumah: String) {
+        val sharedPref = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            putString("nomorRumah", nomorRumah)
+            apply()
+        }
+    }
+
+    fun checkUserLogin(context: Context, navController: NavController) {
+        val sharedPref = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        val nomorRumah = sharedPref.getString("nomorRumah", null)
+
+        if (nomorRumah != null) {
+            navController.navigate("home/$nomorRumah") {
+                popUpTo("login") { inclusive = true }
+            }
+        }
+    }
+
+    fun logout(context: Context, navController: NavController) {
+        val sharedPref = context.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE)
+        with(sharedPref.edit()) {
+            remove("nomorRumah")
+            apply()
+        }
+
+        navController.navigate("login") {
+            popUpTo("home") { inclusive = true }
+        }
+    }
+
 }
 
 //class Register
@@ -108,7 +142,7 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val url = "http://172.16.100.175/button/registrasi.php"
+            val url = "http://172.16.100.128/button/registrasi.php"
             val requestBody = FormBody.Builder()
                 .add("nomor_rumah", nomorRumah)
                 .add("sandi", sandi)
@@ -161,7 +195,7 @@ class PanicButton : ViewModel() {
     ) {
         val client = OkHttpClient()
         val state = if (on) 1 else 0
-        val url = "http://172.16.100.175/button/esp_iot/proses.php?id=2&state=$state"
+        val url = "http://172.16.100.128/button/esp_iot/proses.php?id=2&state=$state"
 
         val request = Request.Builder()
             .url(url)
@@ -198,12 +232,13 @@ class PanicButton : ViewModel() {
     }
 }
 
+
 data class MonitorData(val nomorRumah: String, val waktu: String)
 suspend fun fetchMonitorData(): MonitorData? {
-    return withContext(Dispatchers.IO) { // This ensures the network operation runs on a background thread
+    return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("http://172.16.100.175/button/monitor.php")
+            .url("http://172.16.100.128/button/monitor.php")
             .build()
 
         client.newCall(request).execute().use { response ->
@@ -211,8 +246,6 @@ suspend fun fetchMonitorData(): MonitorData? {
 
             val html = response.body?.string() ?: return@withContext null
             val document: Document = Jsoup.parse(html)
-
-            // Extract the data you need
             val nomorRumah = document.select("#logTable td").first().text()
             val waktu = document.select("#logTable td").get(1).text()
 
@@ -220,8 +253,6 @@ suspend fun fetchMonitorData(): MonitorData? {
         }
     }
 }
-
-
 
 
 

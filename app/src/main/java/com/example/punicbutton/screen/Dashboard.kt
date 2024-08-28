@@ -1,9 +1,10 @@
 package com.example.punicbutton.screen
 
-import androidx.compose.foundation.layout.Arrangement
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -19,16 +20,16 @@ import androidx.navigation.compose.rememberNavController
 fun Dashboard(navController: NavController,modifier: Modifier = Modifier) {
     Column(
         modifier
-            .fillMaxSize()
-            .padding(24.dp),
+            .fillMaxWidth()
+            .padding(start = 24.dp, end = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.padding(top = 40.dp))
        Text(text = "admin",
            fontSize = 46.sp)
 
         MonitorScreen()
-
-
+        RekapScreen()
     }
 }
 
