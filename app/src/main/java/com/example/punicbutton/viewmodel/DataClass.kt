@@ -23,6 +23,7 @@ import com.example.punicbutton.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.FormBody
@@ -30,6 +31,8 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 
 
 // class Login
@@ -51,7 +54,7 @@ class LoginViewModel : ViewModel() {
         }
 
 
-        val url = "http://172.16.100.128/button/login.php"
+        val url = "http://172.16.100.175/button/login.php"
         val requestBody = FormBody.Builder()
             .add("nomor_rumah", nomorRumah)
             .add("sandi", sandi)
@@ -105,7 +108,7 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val url = "http://172.16.100.128/button/registrasi.php"
+            val url = "http://172.16.100.175/button/registrasi.php"
             val requestBody = FormBody.Builder()
                 .add("nomor_rumah", nomorRumah)
                 .add("sandi", sandi)
@@ -158,7 +161,7 @@ class PanicButton : ViewModel() {
     ) {
         val client = OkHttpClient()
         val state = if (on) 1 else 0
-        val url = "http://172.16.100.128/button/esp_iot/proses.php?id=2&state=$state"
+        val url = "http://172.16.100.175/button/esp_iot/proses.php?id=2&state=$state"
 
         val request = Request.Builder()
             .url(url)
@@ -194,6 +197,30 @@ class PanicButton : ViewModel() {
         })
     }
 }
+
+data class MonitorData(val nomorRumah: String, val waktu: String)
+suspend fun fetchMonitorData(): MonitorData? {
+    return withContext(Dispatchers.IO) { // This ensures the network operation runs on a background thread
+        val client = OkHttpClient()
+        val request = Request.Builder()
+            .url("http://172.16.100.175/button/monitor.php")
+            .build()
+
+        client.newCall(request).execute().use { response ->
+            if (!response.isSuccessful) return@withContext null
+
+            val html = response.body?.string() ?: return@withContext null
+            val document: Document = Jsoup.parse(html)
+
+            // Extract the data you need
+            val nomorRumah = document.select("#logTable td").first().text()
+            val waktu = document.select("#logTable td").get(1).text()
+
+            return@withContext MonitorData(nomorRumah, waktu)
+        }
+    }
+}
+
 
 
 
