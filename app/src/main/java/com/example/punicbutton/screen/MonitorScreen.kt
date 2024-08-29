@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -26,10 +27,11 @@ import kotlinx.coroutines.delay
 @Composable
 fun MonitorScreen() {
     var monitorData by remember { mutableStateOf<MonitorData?>(null) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         while (true) {
-            monitorData = fetchMonitorData()
+            monitorData = fetchMonitorData(context)
             delay(1000L)
         }
     }

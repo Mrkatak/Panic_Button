@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.punicbutton.screen.Dashboard
 import com.example.punicbutton.screen.DataRekap
+import com.example.punicbutton.screen.DetailLogScreen
 import com.example.punicbutton.screen.HomeScreen
 import com.example.punicbutton.screen.LoginScreen
 import com.example.punicbutton.screen.RegisterScreen
@@ -50,7 +51,7 @@ fun MyApp() {
         composable("login") { LoginScreen(navController = navController,) }
         composable("register") { RegisterScreen(navController = navController) }
         composable("admin"){ Dashboard(navController)}
-        composable("data_rekap") { DataRekap()}
+        composable("data_rekap") { DataRekap(context)}
         composable("home/{nomorRumah}") { backStackEntry ->
             val nomorRumah = backStackEntry.arguments?.getString("nomorRumah")?.toIntOrNull() ?: 0
             HomeScreen(
@@ -59,6 +60,9 @@ fun MyApp() {
                 navController =navController
             )
         }
-
+        composable("detail_log/{nomorRumah}") { backStackEntry ->
+            val nomorRumah = backStackEntry.arguments?.getString("nomorRumah") ?: 0
+            DetailLogScreen(nomorRumah = nomorRumah.toString(), context)
+        }
     }
 }

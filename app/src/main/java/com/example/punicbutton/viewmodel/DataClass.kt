@@ -1,21 +1,13 @@
 package com.example.punicbutton.viewmodel
 
+import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.outlined.AccountBox
-import androidx.compose.material.icons.outlined.Build
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
@@ -31,9 +23,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
+import org.json.JSONArray
+import org.json.JSONException
+import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
-
 
 // class Login
 class LoginViewModel : ViewModel() {
@@ -53,7 +47,7 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-        val url = "http://192.168.1.6/button/login.php"
+        val url = "http://${context.getString(R.string.ipAdd)}/button/login.php"
         val requestBody = FormBody.Builder()
             .add("nomor_rumah", nomorRumah)
             .add("sandi", sandi)
@@ -142,7 +136,7 @@ class RegisterViewModel : ViewModel() {
         }
 
         viewModelScope.launch {
-            val url = "http://192.168.1.6/button/registrasi.php"
+            val url = "http://${context.getString(R.string.ipAdd)}/button/registrasi.php"
             val requestBody = FormBody.Builder()
                 .add("nomor_rumah", nomorRumah)
                 .add("sandi", sandi)
@@ -184,7 +178,7 @@ class RegisterViewModel : ViewModel() {
 }
 
 //class Panic Button
-class PanicButton : ViewModel() {
+class PanicButton (application: Application) : AndroidViewModel(application) {
     private val client = OkHttpClient()
 
     fun toggleDevice(
@@ -193,9 +187,10 @@ class PanicButton : ViewModel() {
         snackbarHostState: SnackbarHostState,
         onLoadingChange: (Boolean) -> Unit
     ) {
+        val ipAddress = getApplication<Application>().getString(R.string.ipAdd)
         val client = OkHttpClient()
         val state = if (on) 1 else 0
-        val url = "http://192.168.1.6/button/esp_iot/proses.php?id=2&state=$state"
+        val url = "http://$ipAddress/button/esp_iot/proses.php?id=2&state=$state"
 
         val request = Request.Builder()
             .url(url)
@@ -234,11 +229,11 @@ class PanicButton : ViewModel() {
 
 
 data class MonitorData(val nomorRumah: String, val waktu: String)
-suspend fun fetchMonitorData(): MonitorData? {
+suspend fun fetchMonitorData(context: Context): MonitorData? {
     return withContext(Dispatchers.IO) {
         val client = OkHttpClient()
         val request = Request.Builder()
-            .url("http://192.168.1.6/button/monitor.php")
+            .url("http://${context.getString(R.string.ipAdd)}/button/monitor.php")
             .build()
 
         client.newCall(request).execute().use { response ->
@@ -246,10 +241,10 @@ suspend fun fetchMonitorData(): MonitorData? {
 
             val html = response.body?.string() ?: return@withContext null
             val document: Document = Jsoup.parse(html)
-            val nomorRumah = document.select("#logTable td").first().text()
+            val nomorRumah = document.select("#logTable td").first()?.text()
             val waktu = document.select("#logTable td").get(1).text()
 
-            return@withContext MonitorData(nomorRumah, waktu)
+            return@withContext MonitorData(nomorRumah.toString(), waktu)
         }
     }
 }
@@ -277,6 +272,28 @@ fun extractRekapData(html: String): List<RekapItem> {
     return rekapItems
 }
 
+
+data class LogDetailItem( val waktu: String, val nomorRumah: String, val status: String)
+fun extractLogData(data: String): List<LogDetailItem> {
+    val logList = mutableListOf<LogDetailItem>()
+
+    try {
+        val jsonArray = JSONArray(data)
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val waktu = jsonObject.getString("waktu")
+            val nomorRumah = jsonObject.getString("nomorRumah")
+            val status = jsonObject.getString("status")
+
+            val logItem = LogDetailItem(waktu, nomorRumah, status)
+            logList.add(logItem)
+        }
+    } catch (e: JSONException) {
+        e.printStackTrace()
+    }
+    return logList
+}
 
 
 

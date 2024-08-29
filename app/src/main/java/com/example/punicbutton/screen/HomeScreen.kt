@@ -1,13 +1,12 @@
 package com.example.punicbutton.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -23,7 +22,6 @@ import com.example.punicbutton.R
 import com.example.punicbutton.viewmodel.LoginViewModel
 import com.example.punicbutton.viewmodel.PanicButton
 import kotlinx.coroutines.delay
-import java.io.BufferedReader
 
 @Composable
 fun HomeScreen(
@@ -39,29 +37,45 @@ fun HomeScreen(
     val loginViewModel = LoginViewModel()
     val context = LocalContext.current
 
-    Box(
-        contentAlignment = Alignment.TopEnd
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
-        Button(
-            onClick = { showKeluarDialog = true },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = colorResource(id = R.color.biru),
-                contentColor = Color.White
-            )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 100.dp, end = 24.dp),
+            contentAlignment = Alignment.TopEnd
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(24.dp),
-                painter = painterResource(id = R.drawable.ic_logout),
-                contentDescription = "ic_logout",
-                tint = Color.Black)
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(text = "Keluar",
-                color = Color.Black)
+            Button(
+                onClick = { showKeluarDialog = true },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorResource(id = R.color.biru),
+                    contentColor = Color.White
+                )
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_logout),
+                    contentDescription = "ic_logout",
+                    tint = Color.Black)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(text = "Keluar",
+                    color = Color.Black)
+            }
         }
+        Text(
+            text = "Panic Button",
+            fontSize = 24.sp,
+            fontWeight = FontWeight.Bold
+        )
+
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(8.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally

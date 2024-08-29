@@ -1,6 +1,7 @@
 package com.example.punicbutton.api
 
 
+import com.example.punicbutton.viewmodel.LogDetailItem
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -37,5 +38,10 @@ interface ApiService {
     fun toggleDevice(
         @Query("board") board: Int,
         @Query("state") state: Int): Call<DeviceState>
+
+    @GET("detail_log.php")
+    suspend fun getDetailLog(
+        @Query("log") log: String
+    ): List<LogDetailItem>
 
 }

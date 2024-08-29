@@ -1,6 +1,7 @@
 package com.example.punicbutton.screen
 
 
+import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.punicbutton.R
 import com.example.punicbutton.viewmodel.RekapItem
 import com.example.punicbutton.viewmodel.extractRekapData
 import kotlinx.coroutines.Dispatchers
@@ -29,8 +31,9 @@ import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 
+
 @Composable
-fun DataRekap() {
+fun DataRekap(context: Context) {
     var rekapData by remember { mutableStateOf(listOf<RekapItem>()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -39,7 +42,8 @@ fun DataRekap() {
         while (true) {
             try {
                 withContext(Dispatchers.IO) {
-                    val url = URL("http://192.168.1.6/button/rekap.php")
+                    val serverIp = context.getString(R.string.ipAdd)
+                    val url = URL("http://$serverIp/button/rekap.php")
                     val connection = url.openConnection() as HttpURLConnection
                     connection.connectTimeout = 5000
                     connection.readTimeout = 5000

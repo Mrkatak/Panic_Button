@@ -1,6 +1,9 @@
 package com.example.punicbutton.screen
 
+
+import android.content.Context
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -11,7 +14,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -22,20 +24,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.punicbutton.R
 import com.example.punicbutton.viewmodel.RekapItem
 import com.example.punicbutton.viewmodel.extractRekapData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
-import org.jsoup.Jsoup
 import java.net.HttpURLConnection
 import java.net.URL
 
+
 @Composable
-fun RekapScreen(navController: NavController) {
+fun RekapScreen(navController: NavController, context: Context) {
     var rekapData by remember { mutableStateOf(listOf<RekapItem>()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -44,7 +46,8 @@ fun RekapScreen(navController: NavController) {
         while (true) {
             try {
                 withContext(Dispatchers.IO) {
-                    val url = URL("http://192.168.1.6/button/rekap.php")
+                    val serverIp = context.getString(R.string.ipAdd)
+                    val url = URL("http://$serverIp/button/rekap.php")
                     val connection = url.openConnection() as HttpURLConnection
                     connection.connectTimeout = 5000
                     connection.readTimeout = 5000
@@ -82,7 +85,15 @@ fun RekapScreen(navController: NavController) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(item.waktu)
-                        Text(item.nomorRumah)
+                        Text(
+                            item.nomorRumah,
+                            modifier = Modifier
+                                .clickable {
+                                    navController.navigate("detail_log/${item.nomorRumah}")
+                                    Log.d("Navigation", "Navigating to detail_log/${item.nomorRumah}")
+
+                                }
+                        )
                         Text(item.status)
                     }
                     Divider()
