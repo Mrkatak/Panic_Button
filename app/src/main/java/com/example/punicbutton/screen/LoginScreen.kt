@@ -23,14 +23,14 @@ import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.punicbutton.R
-import com.example.punicbutton.viewmodel.LoginViewModel
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import com.example.punicbutton.viewmodel.ViewModel
 
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: ViewModel = viewModel()
 ) {
     val (nomorRumah, setNomorRumah) = remember { mutableStateOf("") }
     val (sandi, setSandi) = remember { mutableStateOf("") }

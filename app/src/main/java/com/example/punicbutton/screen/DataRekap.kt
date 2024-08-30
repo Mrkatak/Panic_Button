@@ -2,6 +2,8 @@ package com.example.punicbutton.screen
 
 
 import android.content.Context
+import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,9 +24,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.punicbutton.R
 import com.example.punicbutton.viewmodel.RekapItem
-import com.example.punicbutton.viewmodel.extractRekapData
+import com.example.punicbutton.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -33,7 +36,7 @@ import java.net.URL
 
 
 @Composable
-fun DataRekap(context: Context) {
+fun DataRekap(navController: NavController, context: Context, viewModel: ViewModel = ViewModel()) {
     var rekapData by remember { mutableStateOf(listOf<RekapItem>()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -51,7 +54,7 @@ fun DataRekap(context: Context) {
 
                     val inputStream = connection.inputStream
                     val data = inputStream.bufferedReader().use { it.readText() }
-                    val extractedData = extractRekapData(data)
+                    val extractedData = viewModel.extractRekapData(data)
                     rekapData = extractedData
                     errorMessage = null
                 }
@@ -77,7 +80,11 @@ fun DataRekap(context: Context) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(8.dp)
+                            .clickable {
+                                navController.navigate("detail_log/${item.nomorRumah}")
+                                Log.d("Navigation", "Navigating to detail_log/${item.nomorRumah}")
+                            },
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(item.waktu)

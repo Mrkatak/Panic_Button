@@ -21,17 +21,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.punicbutton.viewmodel.MonitorData
-import com.example.punicbutton.viewmodel.fetchMonitorData
+import com.example.punicbutton.viewmodel.ViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun MonitorScreen() {
+fun MonitorScreen(viewModel: ViewModel = ViewModel()) {
     var monitorData by remember { mutableStateOf<MonitorData?>(null) }
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         while (true) {
-            monitorData = fetchMonitorData(context)
+            monitorData = viewModel.fetchMonitorData(context)
             delay(1000L)
         }
     }

@@ -35,11 +35,11 @@ import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.punicbutton.R
-import com.example.punicbutton.viewmodel.RegisterViewModel
+import com.example.punicbutton.viewmodel.ViewModel
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun RegisterScreen(navController: NavController, viewModel: RegisterViewModel = viewModel()) {
+fun RegisterScreen(navController: NavController, viewModel: ViewModel = viewModel()) {
     val (nomorRumah, setNomorRumah) = remember { mutableStateOf("") }
     val (sandi, setSandi) = remember { mutableStateOf("") }
     val context = LocalContext.current

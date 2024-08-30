@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.punicbutton.R
 import com.example.punicbutton.viewmodel.RekapItem
-import com.example.punicbutton.viewmodel.extractRekapData
+import com.example.punicbutton.viewmodel.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -37,7 +37,7 @@ import java.net.URL
 
 
 @Composable
-fun RekapScreen(navController: NavController, context: Context) {
+fun RekapScreen(navController: NavController, context: Context, viewModel: ViewModel = ViewModel()) {
     var rekapData by remember { mutableStateOf(listOf<RekapItem>()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
@@ -55,7 +55,7 @@ fun RekapScreen(navController: NavController, context: Context) {
 
                     val inputStream = connection.inputStream
                     val data = inputStream.bufferedReader().use { it.readText() }
-                    val extractedData = extractRekapData(data)
+                    val extractedData = viewModel.extractRekapData(data)
                     rekapData = extractedData.take(5)
                     errorMessage = null
                 }
@@ -81,19 +81,15 @@ fun RekapScreen(navController: NavController, context: Context) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp),
+                            .padding(8.dp)
+                            .clickable {
+                                navController.navigate("detail_log/${item.nomorRumah}")
+                                Log.d("Navigation", "Navigating to detail_log/${item.nomorRumah}")
+                            },
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(item.waktu)
-                        Text(
-                            item.nomorRumah,
-                            modifier = Modifier
-                                .clickable {
-                                    navController.navigate("detail_log/${item.nomorRumah}")
-                                    Log.d("Navigation", "Navigating to detail_log/${item.nomorRumah}")
-
-                                }
-                        )
+                        Text(item.nomorRumah)
                         Text(item.status)
                     }
                     Divider()

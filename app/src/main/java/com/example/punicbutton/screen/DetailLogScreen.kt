@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.punicbutton.R
 import com.example.punicbutton.viewmodel.LogDetailItem
-import com.example.punicbutton.viewmodel.extractLogData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup

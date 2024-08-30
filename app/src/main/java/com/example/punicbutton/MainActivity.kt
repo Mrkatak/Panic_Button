@@ -23,7 +23,7 @@ import com.example.punicbutton.screen.HomeScreen
 import com.example.punicbutton.screen.LoginScreen
 import com.example.punicbutton.screen.RegisterScreen
 import com.example.punicbutton.ui.theme.PunicButtonTheme
-import com.example.punicbutton.viewmodel.LoginViewModel
+import com.example.punicbutton.viewmodel.ViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
 fun MyApp() {
     val navController = rememberNavController()
     val context = LocalContext.current
-    val loginViewModel : LoginViewModel = viewModel()
+    val loginViewModel : ViewModel = viewModel()
 
     LaunchedEffect(Unit) {
         loginViewModel.checkUserLogin(context, navController)
@@ -51,7 +51,7 @@ fun MyApp() {
         composable("login") { LoginScreen(navController = navController,) }
         composable("register") { RegisterScreen(navController = navController) }
         composable("admin"){ Dashboard(navController)}
-        composable("data_rekap") { DataRekap(context)}
+        composable("data_rekap") { DataRekap(navController,context)}
         composable("home/{nomorRumah}") { backStackEntry ->
             val nomorRumah = backStackEntry.arguments?.getString("nomorRumah")?.toIntOrNull() ?: 0
             HomeScreen(

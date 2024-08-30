@@ -30,8 +30,12 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 // class Login
-class LoginViewModel : ViewModel() {
+class ViewModel : ViewModel() {
     private val client = OkHttpClient()
+
+    // Masuk ke admin
+    val admin_norum = "admin"
+    val admin_sandi = "admin"
 
     fun login(nomorRumah: String, sandi: String, context: Context, navController: NavController) {
         if (nomorRumah.isBlank() || sandi.isBlank()) {
@@ -39,7 +43,7 @@ class LoginViewModel : ViewModel() {
             return
         }
 
-        if (nomorRumah == "admin" && sandi == "admin") {
+        if (nomorRumah == admin_norum && sandi == admin_sandi) {
             Toast.makeText(context, "Login sebagai admin berhasil!", Toast.LENGTH_SHORT).show()
             navController.navigate("admin") {
                 popUpTo("login") { inclusive = true }
@@ -123,12 +127,7 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-}
-
-//class Register
-class RegisterViewModel : ViewModel() {
-    private val client = OkHttpClient()
-
+    // Function untuk register
     fun register(nomorRumah: String, sandi: String, context: Context, navController: NavController) {
         if (nomorRumah.isBlank() || sandi.isBlank()){
             Toast.makeText(context, "Pendaftaran gagal: Lengkapi data diatas", Toast.LENGTH_SHORT).show()
@@ -175,7 +174,50 @@ class RegisterViewModel : ViewModel() {
             })
         }
     }
+    suspend fun fetchMonitorData(context: Context): MonitorData? {
+        return withContext(Dispatchers.IO) {
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url("http://${context.getString(R.string.ipAdd)}/button/monitor.php")
+                .build()
+
+            client.newCall(request).execute().use { response ->
+                if (!response.isSuccessful) return@withContext null
+
+                val html = response.body?.string() ?: return@withContext null
+                val document: Document = Jsoup.parse(html)
+                val nomorRumah = document.select("#logTable td").first()?.text()
+                val waktu = document.select("#logTable td").get(1).text()
+
+                return@withContext MonitorData(nomorRumah.toString(), waktu)
+            }
+        }
+    }
+
+
+    fun extractRekapData(html: String): List<RekapItem> {
+        val rekapItems = mutableListOf<RekapItem>()
+        try {
+            val document = Jsoup.parse(html)
+            val rows = document.select("table tr")
+
+            for (i in 1 until rows.size) {
+                val cols = rows[i].select("td")
+                if (cols.size >= 3) {
+                    val waktu = cols[0].text()
+                    val nomorRumah = cols[1].text()
+                    val status = cols[2].text()
+                    rekapItems.add(RekapItem(waktu, nomorRumah, status))
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("RekapScreen", "Error parsing HTML", e)
+        }
+        return rekapItems
+    }
+
 }
+
 
 //class Panic Button
 class PanicButton (application: Application) : AndroidViewModel(application) {
@@ -228,72 +270,13 @@ class PanicButton (application: Application) : AndroidViewModel(application) {
 }
 
 
-data class MonitorData(val nomorRumah: String, val waktu: String)
-suspend fun fetchMonitorData(context: Context): MonitorData? {
-    return withContext(Dispatchers.IO) {
-        val client = OkHttpClient()
-        val request = Request.Builder()
-            .url("http://${context.getString(R.string.ipAdd)}/button/monitor.php")
-            .build()
-
-        client.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) return@withContext null
-
-            val html = response.body?.string() ?: return@withContext null
-            val document: Document = Jsoup.parse(html)
-            val nomorRumah = document.select("#logTable td").first()?.text()
-            val waktu = document.select("#logTable td").get(1).text()
-
-            return@withContext MonitorData(nomorRumah.toString(), waktu)
-        }
-    }
-}
 
 
-data class RekapItem(val waktu: String, val nomorRumah: String, val status: String)
-fun extractRekapData(html: String): List<RekapItem> {
-    val rekapItems = mutableListOf<RekapItem>()
-    try {
-        val document = Jsoup.parse(html)
-        val rows = document.select("table tr")
-
-        for (i in 1 until rows.size) {
-            val cols = rows[i].select("td")
-            if (cols.size >= 3) {
-                val waktu = cols[0].text()
-                val nomorRumah = cols[1].text()
-                val status = cols[2].text()
-                rekapItems.add(RekapItem(waktu, nomorRumah, status))
-            }
-        }
-    } catch (e: Exception) {
-        Log.e("RekapScreen", "Error parsing HTML", e)
-    }
-    return rekapItems
-}
 
 
-data class LogDetailItem( val waktu: String, val nomorRumah: String, val status: String)
-fun extractLogData(data: String): List<LogDetailItem> {
-    val logList = mutableListOf<LogDetailItem>()
 
-    try {
-        val jsonArray = JSONArray(data)
 
-        for (i in 0 until jsonArray.length()) {
-            val jsonObject = jsonArray.getJSONObject(i)
-            val waktu = jsonObject.getString("waktu")
-            val nomorRumah = jsonObject.getString("nomorRumah")
-            val status = jsonObject.getString("status")
 
-            val logItem = LogDetailItem(waktu, nomorRumah, status)
-            logList.add(logItem)
-        }
-    } catch (e: JSONException) {
-        e.printStackTrace()
-    }
-    return logList
-}
 
 
 

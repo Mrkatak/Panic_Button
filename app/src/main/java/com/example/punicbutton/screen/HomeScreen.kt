@@ -19,8 +19,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.punicbutton.R
-import com.example.punicbutton.viewmodel.LoginViewModel
 import com.example.punicbutton.viewmodel.PanicButton
+import com.example.punicbutton.viewmodel.ViewModel
 import kotlinx.coroutines.delay
 
 @Composable
@@ -34,7 +34,7 @@ fun HomeScreen(
     var isLoading by remember { mutableStateOf(false) }
     var showDialog by remember { mutableStateOf(false) }
     var showKeluarDialog by remember { mutableStateOf(false) }
-    val loginViewModel = LoginViewModel()
+    val loginViewModel = ViewModel()
     val context = LocalContext.current
 
     Column(
