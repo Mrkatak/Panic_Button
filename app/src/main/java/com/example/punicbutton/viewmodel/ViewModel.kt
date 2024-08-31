@@ -14,6 +14,9 @@ import androidx.navigation.NavController
 import com.example.punicbutton.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Call
@@ -32,6 +35,15 @@ import org.jsoup.nodes.Document
 // class Login
 class ViewModel : ViewModel() {
     private val client = OkHttpClient()
+    private val _isReady = MutableStateFlow(false)
+    val isReady = _isReady.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            delay(3000L)
+            _isReady.value = true
+        }
+    }
 
     // Masuk ke admin
     val admin_norum = "admin"
@@ -174,6 +186,8 @@ class ViewModel : ViewModel() {
             })
         }
     }
+
+    // function utk monitor
     suspend fun fetchMonitorData(context: Context): MonitorData? {
         return withContext(Dispatchers.IO) {
             val client = OkHttpClient()
@@ -194,7 +208,7 @@ class ViewModel : ViewModel() {
         }
     }
 
-
+    //function rekap
     fun extractRekapData(html: String): List<RekapItem> {
         val rekapItems = mutableListOf<RekapItem>()
         try {
@@ -215,7 +229,6 @@ class ViewModel : ViewModel() {
         }
         return rekapItems
     }
-
 }
 
 

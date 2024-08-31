@@ -1,7 +1,6 @@
 package com.example.punicbutton.screen
 
 
-import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -17,5 +17,10 @@ data class LogDetailItem(
     val status: String
 )
 
+data class OnBoardingData(
+    val image: Int,
+    val title: String,
+    val desc: String
+)
 
 

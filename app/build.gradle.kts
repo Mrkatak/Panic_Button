@@ -79,4 +79,9 @@ dependencies {
     implementation ("org.json:json:20210307")
     implementation ("com.google.code.gson:gson:2.8.9")
     implementation("org.jsoup:jsoup:1.14.3")
+
+    implementation ("com.airbnb.android:lottie-compose:5.2.0")
+    implementation("androidx.compose.foundation:foundation:1.6.8")
+    implementation ("androidx.core:core-splashscreen:1.0.1")
+
 }
