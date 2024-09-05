@@ -206,7 +206,7 @@ fun DotsIndicator(
 @OptIn(ExperimentalFoundationApi::class)
 @Preview(showBackground = true)
 @Composable
-fun PreviewOnBoardingPager() {
+fun view() {
     val items = listOf(
         OnBoardingData(
             R.raw.error_wifi,

@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">Panic Button</string>
-    <string name="ipAdd">172.16.100.180</string>
+    <string name="ipAdd">192.168.1.16</string>
 </resources>

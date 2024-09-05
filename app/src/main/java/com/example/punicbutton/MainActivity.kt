@@ -32,40 +32,9 @@ import com.example.punicbutton.viewmodel.ViewModel
 
 class MainActivity : ComponentActivity() {
 
-    private val viewModel by viewModels<ViewModel>()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        installSplashScreen().apply {
-            setKeepOnScreenCondition {
-                !viewModel.isReady.value
-            }
-            setOnExitAnimationListener{ screen ->
-                val zoomX = ObjectAnimator.ofFloat(
-                    screen.iconView,
-                    View.SCALE_X,
-                    0.4f,
-                    0.0f
-                )
-                zoomX.interpolator = OvershootInterpolator()
-                zoomX.duration = 500L
-                zoomX.doOnEnd {screen.remove()}
-
-                val zoomY = ObjectAnimator.ofFloat(
-                    screen.iconView,
-                    View.SCALE_Y,
-                    0.4f,
-                    0.0f
-                )
-                zoomY.interpolator = OvershootInterpolator()
-                zoomY.duration = 500L
-                zoomY.doOnEnd {screen.remove()}
-
-                zoomX.start()
-                zoomY.start()
-            }
-        }
         setContent {
             PunicButtonTheme {
                 MyApp()

@@ -27,8 +27,6 @@ import okhttp3.Request
 import okhttp3.Response
 import okio.IOException
 import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
@@ -45,7 +43,7 @@ class ViewModel : ViewModel() {
         }
     }
 
-    // Masuk ke admin
+    // Masuk sebagai admin
     val admin_norum = "admin"
     val admin_sandi = "admin"
 
@@ -64,6 +62,7 @@ class ViewModel : ViewModel() {
         }
 
         val url = "http://${context.getString(R.string.ipAdd)}/button/login.php"
+        Log.d("LoginViewModel", "Request URL: $url")
         val requestBody = FormBody.Builder()
             .add("nomor_rumah", nomorRumah)
             .add("sandi", sandi)
@@ -72,7 +71,9 @@ class ViewModel : ViewModel() {
         val request = Request.Builder()
             .url(url)
             .post(requestBody)
+            .addHeader("Content-Type", "application/x-www-form-urlencoded")
             .build()
+        Log.d("LoginViewModel", "Request Body: ${requestBody.toString()}")
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
@@ -83,25 +84,29 @@ class ViewModel : ViewModel() {
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string() ?: ""
-                    Log.d("LoginViewModel", "Response Body: $responseBody")
-                    Handler(Looper.getMainLooper()).post {
-                        if (responseBody.contains("success")) {
-                            Toast.makeText(context, "Login berhasil!", Toast.LENGTH_SHORT).show()
+                response.use {
+                    Log.d("LoginViewModel", "HTTP Status Code: ${response.code}")
+                    Log.d("LoginViewModel", "Response Message: ${response.message}")
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string() ?: ""
+                        Log.d("LoginViewModel", "Response Body: $responseBody")
+                        Handler(Looper.getMainLooper()).post {
+                            if (responseBody.contains("success")) {
+                                Toast.makeText(context, "Login berhasil!", Toast.LENGTH_SHORT).show()
 
-                            saveUserLogin(context, nomorRumah)
+                                saveUserLogin(context, nomorRumah)
 
-                            navController.navigate("home/$nomorRumah") {
-                                popUpTo("login") { inclusive = true }
+                                navController.navigate("home/$nomorRumah") {
+                                    popUpTo("login") { inclusive = true }
+                                }
+                            } else {
+                                Toast.makeText(context, "Login gagal: Nomor rumah atau sandi salah", Toast.LENGTH_SHORT).show()
                             }
-                        } else {
-                            Toast.makeText(context, "Login gagal: Nomor rumah atau sandi salah", Toast.LENGTH_SHORT).show()
                         }
-                    }
-                } else {
-                    Handler(Looper.getMainLooper()).post {
-                        Toast.makeText(context, "Login gagal: ${response.message}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(context, "Login gagal: ${response.message}", Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             }
@@ -192,7 +197,7 @@ class ViewModel : ViewModel() {
         return withContext(Dispatchers.IO) {
             val client = OkHttpClient()
             val request = Request.Builder()
-                .url("http://${context.getString(R.string.ipAdd)}/button/monitor.php")
+                .url("http://${context.getString(R.string.ipAdd)}/button/monitor_new.php")
                 .build()
 
             client.newCall(request).execute().use { response ->
@@ -281,17 +286,6 @@ class PanicButton (application: Application) : AndroidViewModel(application) {
         })
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

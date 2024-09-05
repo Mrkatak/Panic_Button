@@ -22,8 +22,7 @@ import com.example.punicbutton.viewmodel.PanicButton
 import com.example.punicbutton.viewmodel.ViewModel
 import kotlinx.coroutines.delay
 
-@Composable
-fun HomeScreen(
+@Composable fun HomeScreen(
     board: Int,
     snackbarHostState: SnackbarHostState,
     viewModel: PanicButton = viewModel(),

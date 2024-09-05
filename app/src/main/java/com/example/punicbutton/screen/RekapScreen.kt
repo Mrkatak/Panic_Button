@@ -69,7 +69,10 @@ fun RekapScreen(navController: NavController, context: Context, viewModel: ViewM
         }
     }
 
-    Column {
+    Column(
+        modifier = Modifier
+            .padding(start = 24.dp, end = 24.dp)
+    ) {
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.padding(16.dp))
         } else if (errorMessage != null) {

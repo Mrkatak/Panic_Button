@@ -14,22 +14,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 
-
-
 @Composable
 fun Dashboard(navController: NavController,modifier: Modifier = Modifier) {
     val context = LocalContext.current
     Column(
         modifier
-            .fillMaxWidth()
-            .padding(start = 24.dp, end = 24.dp),
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.padding(top = 80.dp))
-       Text(text = "admin",
-           fontSize = 46.sp)
-
-        MonitorScreen()
+        ScreenMonitor()
         RekapScreen(navController, context )
     }
 }
